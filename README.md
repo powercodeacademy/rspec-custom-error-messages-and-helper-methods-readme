@@ -1,6 +1,6 @@
 # RSpec: Custom Error Messages & Helper Methods: Making Specs Clear (and Kind)
 
-Welcome to Lesson 8! Have you ever run a test, seen a failure, and thought, “What does that even mean?” Custom error messages and helper methods are your tools for making specs readable, helpful, and even a little bit friendly. In this lesson, we’ll show you how to add custom messages to your expectations and write helper methods to keep your specs DRY, clear, and easy to debug.
+Have you ever run a test, seen a failure, and thought, “What does that even mean?” Custom error messages and helper methods are your tools for making specs readable, helpful, and even a little bit friendly. In this lesson, we’ll show you how to add custom messages to your expectations and write helper methods to keep your specs DRY, clear, and easy to debug.
 
 ---
 
