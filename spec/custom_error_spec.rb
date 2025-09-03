@@ -86,9 +86,10 @@ RSpec.describe GardenPlot do
       expect { tomato.grow! }.to change { tomato.height }.by(0), "Expected plant not to grow with no water"
     end
 
-    it 'is pending: test that tallest_plant returns nil if plot is empty' do
-      pending("Student: Write a spec for tallest_plant on empty plot")
-      raise "Unimplemented pending spec"
+    it 'test that tallest_plant returns nil if plot is empty' do
+      plot
+      expect(plot.tallest_plant).to be(nil), "Expected tallest_plant in empty plot to be nil"
+      
     end
   end
 end
