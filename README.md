@@ -24,26 +24,28 @@ expect(plot.plants).to include(tomato), "Expected plot to include Tomato, but go
 **Expected RSpec Output:**
 
 ```text
-Failure/Error: expect(Calculator.new.add(2, 2)).to eq(5), "Expected 2 + 2 to equal 5, but got something else!"
+Failure/Error: expect(plot.plants).to include(tomato), "Expected plot to include Tomato, but got: #{plot.plants.map(&:name)}"
 
-  Expected 2 + 2 to equal 5, but got something else!
+  Expected plot to include Tomato, but got: ["Carrot", "Lettuce"]
 ```
 
 ---
 
-### More Examples
+### More Custom Error Message Examples
+
+Here are additional examples using our garden domain to show different types of custom messages:
 
 ```ruby
 # /spec/custom_error_spec.rb
 expect(plot.tallest_plant.name).to eq('Sunflower'), "Tallest plant should be Sunflower, got #{plot.tallest_plant.name}"
 ```
 
-**Expected Output (if user.name is "Bob"):**
+**Expected Output (if tallest plant is actually Tomato):**
 
 ```text
-Failure/Error: expect(user.name).to eq("Alice"), "User's name should be Alice, but was #{user.name.inspect}"
+Failure/Error: expect(plot.tallest_plant.name).to eq('Sunflower'), "Tallest plant should be Sunflower, got #{plot.tallest_plant.name}"
 
-  User's name should be Alice, but was "Bob"
+  Tallest plant should be Sunflower, got Tomato
 ```
 
 ```ruby
@@ -51,29 +53,25 @@ Failure/Error: expect(user.name).to eq("Alice"), "User's name should be Alice, b
 expect(plot.all_watered?).to eq(true), "All plants should be watered"
 ```
 
-**Expected Output (if cart.items.count is 1):**
+**Expected Output (if some plants aren't watered):**
 
 ```text
-Failure/Error: expect(cart.items.count).to eq(3), "Cart should have 3 items, but had #{cart.items.count}"
+Failure/Error: expect(plot.all_watered?).to eq(true), "All plants should be watered"
 
-  Cart should have 3 items, but had 1
+  All plants should be watered
 ```
-
----
-
-### Even More Examples
 
 ```ruby
 # /spec/custom_error_spec.rb
 expect(tomato.height).to be_between(1, 5), "Tomato height should be between 1 and 5, but was #{tomato.height}"
 ```
 
-**Expected Output (if temperature is 80):**
+**Expected Output (if tomato height is 8):**
 
 ```text
-Failure/Error: expect(temperature).to be_between(65, 75), "Temperature should be comfortable, but was #{temperature}F"
+Failure/Error: expect(tomato.height).to be_between(1, 5), "Tomato height should be between 1 and 5, but was #{tomato.height}"
 
-  Temperature should be comfortable, but was 80F
+  Tomato height should be between 1 and 5, but was 8
 ```
 
 ```ruby
@@ -81,11 +79,25 @@ Failure/Error: expect(temperature).to be_between(65, 75), "Temperature should be
 expect(tomato.watered).to eq(true), "Expected Tomato to be watered, but it wasn't"
 ```
 
-**Expected Output (if response.status is 404):**
+**Expected Output (if tomato isn't watered):**
+
+```text
+Failure/Error: expect(tomato.watered).to eq(true), "Expected Tomato to be watered, but it wasn't"
+
+  Expected Tomato to be watered, but it wasn't
+```
+
+---
+
+## Helper Methods: Keeping Your Specs DRY
+
+Helper methods let you extract repeated logic and make your tests more readable. Define them directly in your spec files or in shared contexts.
+
+### Basic Helper Method Example
 
 ```ruby
 # /spec/custom_error_spec.rb
-
+def water_and_grow(plant, sunlight: 0)
   plant.water!
   plant.give_sunlight(sunlight)
   plant.grow!
@@ -93,10 +105,13 @@ end
 
 RSpec.describe GardenPlot do
   it "waters and grows a plant with helper" do
+    carrot = Plant.new('Carrot', height: 2)
     expect { water_and_grow(carrot, sunlight: 4) }.to change { carrot.height }.by(2)
   end
 end
 ```
+
+### String Manipulation Helper Example
 
 ```ruby
 # /spec/string_manipulator_spec.rb
@@ -104,7 +119,7 @@ def reverse_and_upcase(str)
   str.reverse.upcase
 end
 
-RSpec.describe StringManipulator do
+RSpec.describe "String manipulation" do
   it "reverses and upcases a string" do
     result = reverse_and_upcase("hello")
     expect(result).to eq("OLLEH")
@@ -112,17 +127,17 @@ RSpec.describe StringManipulator do
 end
 ```
 
-**Expected Output (if the method is correct):**
+**Expected Output (if the method works correctly):**
 
 ```text
-StringManipulator
+String manipulation
   reverses and upcases a string
 
 Finished in 0.01 seconds (files took 0.1 seconds to load)
 1 example, 0 failures
 ```
 
-**If the method is broken (returns str.upcase):**
+**If the method is broken (e.g., only does upcase):**
 
 ```text
 Failure/Error: expect(result).to eq("OLLEH")
@@ -137,8 +152,6 @@ Failure/Error: expect(result).to eq("OLLEH")
 
 Helper methods can take arguments, return values, and even use `let` or instance variables if needed. Just remember: keep them simple and focused on making your tests easier to read.
 
-def add_and_multiply(a, b)
-
 ```ruby
 # /spec/custom_error_spec.rb
 let(:plot) { GardenPlot.new }
@@ -151,7 +164,7 @@ def water_and_grow(plant, sunlight: 0)
 end
 
 RSpec.describe 'helper methods for repeated logic' do
-  it 'waters and grows a plant with helper' do
+  it 'helper methods for repeated logic' do
     expect { water_and_grow(carrot, sunlight: 4) }.to change { carrot.height }.by(2)
   end
 end
@@ -160,8 +173,8 @@ end
 **Expected Output:**
 
 ```text
-add_and_multiply helper
-  adds and multiplies numbers
+helper methods for repeated logic
+  helper methods for repeated logic
 
 Finished in 0.01 seconds (files took 0.1 seconds to load)
 2 examples, 0 failures
