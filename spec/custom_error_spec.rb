@@ -81,9 +81,9 @@ RSpec.describe GardenPlot do
   end
 
   describe 'pending specs for students' do
-    it 'is pending: test that a plant does not grow if not watered' do
-      pending("Student: Write a spec for no growth without watering")
-      raise "Unimplemented pending spec"
+    it 'test that a plant does not grow if not watered' do
+      tomato.give_sunlight(4)
+      expect { tomato.grow! }.to change { tomato.height }.by(0), "Expected plant not to grow with no water"
     end
 
     it 'is pending: test that tallest_plant returns nil if plot is empty' do
